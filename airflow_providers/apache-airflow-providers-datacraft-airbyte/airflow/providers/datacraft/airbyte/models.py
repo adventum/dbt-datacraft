@@ -89,7 +89,7 @@ class SourceSpec(Model):
 
 
 class AirbyteAttemptSpec(Model):
-    attempt: dict[any, any]
+    attempt: dict[str, object]
 
 
 class StatsSpec(Model):

@@ -21,7 +21,8 @@ dependencies = [
     "apache-airflow>=2.9.3, <3.0",
     # "airbyte_api",
     "apache-airflow-providers-airbyte >= 3.8.1, <4.0.0",
-    "pydantic >= 2.7.0, <3"
+    "pydantic >= 2.7.0, <3",
+    "strenum",
 ]
 
 [project.urls]
