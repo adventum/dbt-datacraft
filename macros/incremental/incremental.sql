@@ -76,12 +76,12 @@ SELECT *
 
 {#- проверяем, есть ли в таблице предыдущего шага данные или таблица пустая -#}
 {#- использум доп.макрос - запрос ниже даёт 1, если данные есть и 0, если данных нет -#}
-{#- {{ etlcraft.check_table_empty('test', 'normalize_mt_datestat_default_banners_statistics') }} пример с прописанными значениями -#}
+{#- {{ datacraft.check_table_empty('test', 'normalize_mt_datestat_default_banners_statistics') }} пример с прописанными значениями -#}
 
-{#- set check_table_result = etlcraft.check_table_empty(this.schema, table_pattern) -#}
+{#- set check_table_result = datacraft.check_table_empty(this.schema, table_pattern) -#}
 
 
-SELECT * REPLACE({{ etlcraft.cast_date_field('__date') }} AS __date)  
+SELECT * REPLACE({{ datacraft.cast_date_field('__date') }} AS __date)  
 {%- endif %} {# конец условия про наличие инкрементального поля с датой #}
 
 {#- if check_table_result==1 -#}
