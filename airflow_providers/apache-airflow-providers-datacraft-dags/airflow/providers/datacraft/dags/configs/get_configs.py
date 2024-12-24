@@ -26,12 +26,16 @@ def get_configs(namespace: str, config_names=[]) -> dict:
         "base", get_metaconfig(namespace, "base", default_metaconfigs)
     )
 
+    allowed_values_to_override = [
+        "connectors", "presets", "datasources", "metadata", "events", "attributions",
+    ]
     for base_var in base.keys():
-        overriden_val = process_single_config(
-            namespace, f"base_{base_var}", default_metaconfigs, base
-        )
-        if overriden_val:
-            base[base_var] = overriden_val
+        if base_var in allowed_values_to_override:
+            overriden_val = process_single_config(
+                namespace, f"base_{base_var}", default_metaconfigs, base
+            )
+            if overriden_val:
+                base[base_var] = overriden_val
 
     if "base" in config_names:
         config_names.remove("base")
