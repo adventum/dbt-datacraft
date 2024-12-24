@@ -9,8 +9,12 @@ status: не готово
 Обновляет имеющийся [[Terms/DAG|коннектор]].
 ## Аргументы
 - `airbyte_conn_id` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
-- `id` или `name`— ID или название коннектора, который нужно обновить. Если передан аргумент `name`, то  становится обязательным аргумент `source_definition_list`. В этот аргумент нужно передать результат вызова оператора [[AirbyteListSourceDefinitionsOperator]].
-- `dockerImageTag` — ссылка на образ коннектора в репозитории Docker
-- `documentationUrl` — ссылка на документацию
+- `id` — ID коннектора, который нужно обновить. 
+- source_definition_configuration - словарь с параметрами:
+	 `name` - имя source_definition
+	- `dockerRepository` - ссылка на используемый ресурс коннектора БД (например: adventum/source-google-sheets)
+	- `dockerImageTag` - тег коннектора (например 1.0.0)
+	- `documentationUrl` - ссылка на документацию коннектора БД
+
 ## Возвращаемое значение
 Словарь с параметрами обновленного Airbyte Definition, в т. ч. `sourceDefinitionId`.

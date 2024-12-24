@@ -1,0 +1,902 @@
+{
+    "streams": [
+      {
+        "stream": {
+          "name": "Public Json",
+          "jsonSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+              "$id",
+              "$schema",
+              "default",
+              "definitions",
+              "properties",
+              "title",
+              "type"
+            ],
+            "properties": {
+              "default": {
+                "type": "boolean"
+              },
+              "$schema": {
+                "type": "string"
+              },
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "title": {
+                "type": "string"
+              },
+              "definitions": {
+                "type": "object",
+                "required": [
+                  "nonNegativeInteger",
+                  "nonNegativeIntegerDefault0",
+                  "schemaArray",
+                  "simpleTypes",
+                  "stringArray"
+                ],
+                "properties": {
+                  "simpleTypes": {
+                    "type": "object",
+                    "required": [
+                      "enum"
+                    ],
+                    "properties": {
+                      "enum": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "nonNegativeIntegerDefault0": {
+                    "type": "object",
+                    "required": [
+                      "allOf"
+                    ],
+                    "properties": {
+                      "allOf": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "default": {
+                              "type": "integer"
+                            },
+                            "$ref": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "schemaArray": {
+                    "type": "object",
+                    "required": [
+                      "items",
+                      "minItems",
+                      "type"
+                    ],
+                    "properties": {
+                      "minItems": {
+                        "type": "integer"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "$ref"
+                        ],
+                        "properties": {
+                          "$ref": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "stringArray": {
+                    "type": "object",
+                    "required": [
+                      "default",
+                      "items",
+                      "type",
+                      "uniqueItems"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "array"
+                      },
+                      "uniqueItems": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "nonNegativeInteger": {
+                    "type": "object",
+                    "required": [
+                      "minimum",
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "minimum": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              },
+              "properties": {
+                "type": "object",
+                "required": [
+                  "$comment",
+                  "$id",
+                  "$ref",
+                  "$schema",
+                  "additionalItems",
+                  "additionalProperties",
+                  "allOf",
+                  "anyOf",
+                  "const",
+                  "contains",
+                  "contentEncoding",
+                  "contentMediaType",
+                  "default",
+                  "definitions",
+                  "dependencies",
+                  "description",
+                  "else",
+                  "enum",
+                  "examples",
+                  "exclusiveMaximum",
+                  "exclusiveMinimum",
+                  "format",
+                  "if",
+                  "items",
+                  "maxItems",
+                  "maxLength",
+                  "maxProperties",
+                  "maximum",
+                  "minItems",
+                  "minLength",
+                  "minProperties",
+                  "minimum",
+                  "multipleOf",
+                  "not",
+                  "oneOf",
+                  "pattern",
+                  "patternProperties",
+                  "properties",
+                  "propertyNames",
+                  "readOnly",
+                  "required",
+                  "then",
+                  "title",
+                  "type",
+                  "uniqueItems",
+                  "writeOnly"
+                ],
+                "properties": {
+                  "writeOnly": {
+                    "type": "object",
+                    "required": [
+                      "default",
+                      "type"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "const": {
+                    "type": "boolean"
+                  },
+                  "$schema": {
+                    "type": "object",
+                    "required": [
+                      "format",
+                      "type"
+                    ],
+                    "properties": {
+                      "format": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "minLength": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "pattern": {
+                    "type": "object",
+                    "required": [
+                      "format",
+                      "type"
+                    ],
+                    "properties": {
+                      "format": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "description": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "object",
+                    "required": [
+                      "anyOf"
+                    ],
+                    "properties": {
+                      "anyOf": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "minItems": {
+                              "type": "integer"
+                            },
+                            "uniqueItems": {
+                              "type": "boolean"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "$ref": {
+                              "type": "string"
+                            },
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "$ref"
+                              ],
+                              "properties": {
+                                "$ref": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "exclusiveMaximum": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "patternProperties": {
+                    "type": "object",
+                    "required": [
+                      "additionalProperties",
+                      "default",
+                      "propertyNames",
+                      "type"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "object"
+                      },
+                      "propertyNames": {
+                        "type": "object",
+                        "required": [
+                          "format"
+                        ],
+                        "properties": {
+                          "format": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "$ref"
+                        ],
+                        "properties": {
+                          "$ref": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "allOf": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "not": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "oneOf": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "default": {
+                    "type": "boolean"
+                  },
+                  "else": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalItems": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "contentEncoding": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "maxProperties": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "exclusiveMinimum": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "if": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "definitions": {
+                    "type": "object",
+                    "required": [
+                      "additionalProperties",
+                      "default",
+                      "type"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "object"
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "$ref"
+                        ],
+                        "properties": {
+                          "$ref": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "multipleOf": {
+                    "type": "object",
+                    "required": [
+                      "exclusiveMinimum",
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "exclusiveMinimum": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "maxItems": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "contentMediaType": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "format": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "anyOf": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "readOnly": {
+                    "type": "object",
+                    "required": [
+                      "default",
+                      "type"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "then": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "$comment": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "enum": {
+                    "type": "object",
+                    "required": [
+                      "items",
+                      "minItems",
+                      "type",
+                      "uniqueItems"
+                    ],
+                    "properties": {
+                      "minItems": {
+                        "type": "integer"
+                      },
+                      "uniqueItems": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "items": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "dependencies": {
+                    "type": "object",
+                    "required": [
+                      "additionalProperties",
+                      "type"
+                    ],
+                    "properties": {
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "anyOf"
+                        ],
+                        "properties": {
+                          "anyOf": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "$ref"
+                              ],
+                              "properties": {
+                                "$ref": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "minProperties": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "minItems": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "contains": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "type": "object",
+                    "required": [
+                      "items",
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "items": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "propertyNames": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "uniqueItems": {
+                    "type": "object",
+                    "required": [
+                      "default",
+                      "type"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "maximum": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "$ref": {
+                    "type": "object",
+                    "required": [
+                      "format",
+                      "type"
+                    ],
+                    "properties": {
+                      "format": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "anyOf",
+                      "default"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "boolean"
+                      },
+                      "anyOf": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "$ref"
+                          ],
+                          "properties": {
+                            "$ref": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "minimum": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "maxLength": {
+                    "type": "object",
+                    "required": [
+                      "$ref"
+                    ],
+                    "properties": {
+                      "$ref": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "required": [
+                      "additionalProperties",
+                      "default",
+                      "type"
+                    ],
+                    "properties": {
+                      "default": {
+                        "type": "object"
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "$ref"
+                        ],
+                        "properties": {
+                          "$ref": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "$id": {
+                    "type": "object",
+                    "required": [
+                      "format",
+                      "type"
+                    ],
+                    "properties": {
+                      "format": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "$id": {
+                "type": "string"
+              }
+            }
+          },
+          "supportedSyncModes": [
+            "full_refresh"
+          ],
+          "defaultCursorField": [
+
+          ],
+          "sourceDefinedPrimaryKey": [
+
+          ]
+        },
+        "config": {
+          "syncMode": "full_refresh",
+          "cursorField": [
+
+          ],
+          "destinationSyncMode": "overwrite",
+          "primaryKey": [
+
+          ],
+          "aliasName": "Public_Json",
+          "selected": true,
+          "suggested": true
+        }
+      }
+    ]
+  }

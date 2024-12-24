@@ -14,5 +14,6 @@ status: ready (нужен тест?)
 Список словарей с полями:
 - `sourceDefinitionId`
 - `name` 
+- `dockerRepository`
 - `dockerImageTag`
 - `documentationUrl`
