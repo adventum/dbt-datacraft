@@ -1325,4 +1325,4 @@ SELECT * FROM (
 
  **Макросы**
 `datacraft.create_dataset()`
-[[create_dataset|Подробнее про макрос creat_dataset]].
+[[create_dataset|Подробнее про макрос create_dataset]].
