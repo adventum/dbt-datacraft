@@ -51,19 +51,40 @@
                         'Int8', 'Int16', 'Int32', 'Int64', 'Int128', 'Int256',
                         'Float8', 'Float16','Float32', 'Float64','Float128', 'Float256','Num'] -%} 
 
+{#- меняем немного логику, так как при таком подходе, если все поля не числовые или почти все, то группировка идёт по всем полям и дубли не убираются из даннных -#}
 {#- для каждой колонки таблицы, на которую будем ссылаться -#}
-SELECT {% for c in source_columns -%}
+{# SELECT {% for c in source_columns -%} #}
 {#- если тип данных колонки не числовой - добавляем её в список для будущей группировки -#}
-{% if c.data_type not in numeric_types %}{{ c.name }}
-{%- do group_by_fields.append(c.name)  -%}
+{# {% if c.data_type not in numeric_types %} {{ c.name }} #}
+{# {%- do group_by_fields.append(c.name)  -%} #}
 {#- а если тип данных колонки числовой - суммируем данные по ней -#}
-{%- elif c.data_type in numeric_types %}SUM({{ c.name }}) AS {{ c.name }}
+{# {%- elif c.data_type in numeric_types %} SUM({{ c.name }}) AS {{ c.name }} #}
 {#- а для остальных (т.е. колонок не числового типа данных) - делаем MAX - чтобы избежать дублей -#}
-{%- else %} MAX({{ c.name }}) AS {{ c.name }}
+{# {%- else %} MAX({{ c.name }}) AS {{ c.name }} #}
 {#- после каждой строки кроме последней расставляем запятые, чтобы сгенерировался читаемый запрос -#}
-{%- endif %}{% if not loop.last %},{% endif %}{% endfor %} 
+{# {%- endif %}{% if not loop.last %},{% endif %}{% endfor %} #}
+{# FROM {{ ref(source_model_name) }} #}
+{# GROUP BY {{ group_by_fields | join(', ') }} #}
+
+
+SELECT {% for c in source_columns -%}
+{# Столбец, по которому группируем, просто выводим #}
+{% if c.name == '__id' %}
+      {{ c.name }} AS {{ c.name }}
+{#- для колонок не числового типа данных - делаем any() - чтобы избежать дублей -#}
+{#- выбрали функцию any(), так как её использование позволяет улучшить производительность в отличии от ф-ии max() -#}
+{% elif c.data_type not in numeric_types %} 
+      any({{ c.name }}) AS {{ c.name }}
+{#- а если тип данных колонки числовой - суммируем данные по ней -#}
+{%- elif c.data_type in numeric_types and splitByChar('_', __table_name)[5] != 'amocrm' %} 
+      SUM({{ c.name }}) AS {{ c.name }}
+{%- else %} any({{ c.name }}) AS {{ c.name }}
+{#- после каждой строки кроме последней расставляем запятые, чтобы сгенерировался читаемый запрос -#}
+{%- endif %} {% if not loop.last %},{% endif %}{% endfor %} 
 FROM {{ ref(source_model_name) }}
-GROUP BY {{ group_by_fields | join(', ') }}
+{#- группируем данные по главному хэшу, так как если главный хэш встречается несколько раз в данных - то это дубли -#}
+GROUP BY __id
+
 {% if limit0 %}
 LIMIT 0
 {%- endif -%}
