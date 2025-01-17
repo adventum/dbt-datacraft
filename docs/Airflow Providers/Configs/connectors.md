@@ -13,14 +13,10 @@ doc_status: ready (нужно ревью)
 
 В обоих разделах почти одинаковая структура:
 
-- `slug`  — идентификатор, 
-	- соответствующий [[Source|краткому названию источника данных]] для `source_definitions`, взятое из [[Connectors]] 
-	- и для `destination_definitions` соответствующий названию базы данных, куда коннектором будут выгружаться данные
-    
-    [[Add slug validation check to connector creation DAG]]
-    
-- `image` — название Docker-образа на DockerHub
-- `documentation`  — ссылка на раздел “[[Connectors]]”, где даны инструкции, как подключить коннектор в Aibyte
+- `name` - имя создаваемого definition, который будет отображаться в UI airbyte
+- `dockerRepository` - название Docker-образа на DockerHub
+- `dockerImageTag` — тег Docker-образа на DockerHub
+- `documentationUrl`  — ссылка на раздел “[[Connectors]]”, где даны инструкции, как подключить коннектор в Aibyte
 
 В `source_definitions` дополнительно входит поле `account_id_field`, которое определяет, какое поле должно изменяться при создании нового подключения по шаблону дагом [[create_connections]].
 

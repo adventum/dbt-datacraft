@@ -1,4 +1,5 @@
 import json
+import logging
 import pathlib
 import yaml
 
@@ -27,9 +28,16 @@ def get_configs(namespace: str, config_names=[]) -> dict:
     )
 
     for base_var in base.keys():
-        overriden_val = process_single_config(
-            namespace, f"base_{base_var}", default_metaconfigs, base
-        )
+        try:
+            overriden_val = process_single_config(
+                namespace, f"base_{base_var}", default_metaconfigs, base
+            )
+        except Exception as e:
+            logging.warning(
+                f"Failed to override {base_var} in base config,"
+                f" this iteration will be skipping. {base_var}: {e}"
+            )
+            continue
         if overriden_val:
             base[base_var] = overriden_val
 
