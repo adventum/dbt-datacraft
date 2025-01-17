@@ -8,101 +8,45 @@
         "type": "tabs",
         "children": [
           {
-            "id": "b2d747cd878308cd",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "dbt Package/join.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "join"
-            }
-          },
-          {
-            "id": "32be47a59c1356a3",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "dbt Package/combine.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "combine"
-            }
-          },
-          {
             "id": "c595ef2bacbde5db",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "dbt Package/custom_union_relations.md",
+                "file": "Airflow Providers/Configs/datasources.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "custom_union_relations"
+              "title": "datasources"
             }
           },
           {
-            "id": "b20567209a9ca539",
+            "id": "463e3fd85fb9b368",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Airflow Providers/Configs/attributions.md",
+                "file": "Airflow Providers/Configs/connectors.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "attributions"
+              "title": "connectors"
             }
           },
           {
-            "id": "b273a14a9abc764b",
+            "id": "856a510ccea1f47b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Airflow Providers/Configs/event_segments.md",
+                "file": "Airflow Providers/DAGs/create_connections.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "event_segments"
-            }
-          },
-          {
-            "id": "117b93fbbdf10bcc",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Airflow Providers/Configs/events.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "events"
-            }
-          },
-          {
-            "id": "982f9f96a6ae89f7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Airflow Providers/Configs/dimensions.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "dimensions"
+              "title": "create_connections"
             }
           }
         ],
@@ -197,12 +141,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "dbt Package/custom_union_relations.md",
+                "file": "Airflow Providers/DAGs/create_connections.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               },
               "icon": "links-going-out",
-              "title": "Исходящие ссылки из custom_union_relations"
+              "title": "Outgoing links from create_connections"
             }
           },
           {
@@ -239,17 +183,24 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Меню быстрого перехода": false,
-      "graph:Граф": false,
-      "canvas:Создать новый холст": false,
-      "daily-notes:Сегодняшняя заметка": false,
-      "templates:Вставить шаблон": false,
-      "command-palette:Открыть палитру команд": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
       "webpage-html-export:Export Vault to HTML": false
     }
   },
-  "active": "c595ef2bacbde5db",
+  "active": "856a510ccea1f47b",
   "lastOpenFiles": [
+    "Airflow Providers/Configs/datasources.md",
+    "Airflow Providers/DAGs/create_connections.md",
+    "Airflow Providers/Configs/connectors.md",
+    "Airflow Providers/Configs/presets.md",
+    "Airflow Providers/DAGs/install_connectors.md",
+    "Airflow Providers/How DAGs work.md",
+    "dbt Package/custom_union_relations.md",
     "dbt Package/combine.md",
     "dbt Package/json_extract_string.md",
     "dbt Package/join_ym_events.md",
@@ -262,7 +213,6 @@
     "dbt Package/join_appsflyer_events.md",
     "dbt Package/join_appmetrica_registry_appprofilematching.md",
     "dbt Package/join_appmetrica_events.md",
-    "dbt Package/custom_union_relations.md",
     "Methodology.md",
     "Airflow Providers/Configs/dimensions.md",
     "Airflow Providers/Configs/events.md",
@@ -270,12 +220,6 @@
     "Airflow Providers/Configs/event_segments.md",
     "dbt Package/join.md",
     "dbt Package/normalize.md",
-    "dbt Package/Pavel's additional macros and docs/README.md",
-    "Terms.md",
-    "index.md",
-    "Airflow Providers.md",
-    "Terms/Stream.md",
-    "Terms/Source.md",
     "dbt Package/README.html",
     "attachments/example_of_work_for_graph_step.jpg",
     "attachments/getting_hash_at_hash_step.png",

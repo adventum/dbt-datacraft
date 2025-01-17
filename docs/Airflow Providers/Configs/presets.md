@@ -16,10 +16,11 @@ doc_status: ready (нужно ревью)
 
 Подробнее - [[Direct integration]]
 
-2) `source_presets`: конфигурации соединений в Airbyte. Для каждого источника данных формируется свой подраздел (см. [[How to create a config for presets|Инструкция как сформировать конфиг для presets]]). Во все подразделы обязательно добавляются разделы:
+2) `connection_presets`: конфигурации соединений (не источников!) в Airbyte. Для каждого шаблона формируется свой подраздел (см. [[How to create a config for presets|Инструкция как сформировать конфиг для presets]]). Во все подразделы обязательно добавляются разделы:
 	- [[Entity|entities]]
 	- [[Terms/Link|links]]
    Также для каждого [[Stream]] в подразделе `streams` указывается соответствующий ему [[Pipeline]].
+3) `destination_presets`: конфигурации мест назначения в Airbyte. В этом словаре обязательно должен быть элемест `clickhouse_default`.
 
 Данные, содержащиеся в этом конфиге, необходимы для создания соединений в Airbyte. Соединения создаются автоматически с помощью DAG’а [[create_connections]].
 
@@ -37,7 +38,7 @@ doc_status: ready (нужно ревью)
         "entities": ["entity1", "entity2"] 
     }       
         },
-"source_presets": {
+"connection_presets": {
     "appmetrica_default":
     {
         "connectionId": "*****",
@@ -202,8 +203,5 @@ doc_status: ready (нужно ревью)
             "supportState": "supported"
         }
     },
-    "ym_default":
-
-}
 }
 ```

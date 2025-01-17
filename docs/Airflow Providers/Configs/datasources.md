@@ -26,24 +26,27 @@ doc_status: ready (нужно ревью)
     "datasources": {
         "13": {
             "source_type": "yd",
-            "account_name": "adventum-client2",
+            "account_id": "adventum-client2",
             "project": "datacraft",
             "preset": "yd_default", 
-            "source_class": "ads_cabinet"
+            "source_class": "ads_cabinet",
+            "credentials_craft_token_id": 1
         },
         "14": {
             "source_type": "ym",
-            "account_name": "adventum-client2",
+            "account_id": "adventum-client2",
             "project": "datacraft",
             "preset": "ym_default", 
-            "source_class": "ads_cabinet"
+            "source_class": "ads_cabinet",
+            "credentials_craft_token_id": 2
         },
 		"15": {
             "source_type": "appmetrica",
-            "account_name": "adventum-client2",
+            "account_id": "adventum-client2",
             "project": "datacraft",
             "preset": "appmetrica_default", 
-            "source_class": "ads_cabinet"
+            "source_class": "ads_cabinet",
+            "credentials_craft_token_id": 3
         }
     }
 }
