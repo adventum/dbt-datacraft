@@ -4,6 +4,7 @@
   override_target_model_name=none,
   date_from = none,
   date_to = none,
+  datasources=none,
   limit0=none
   ) 
 -%}
@@ -75,9 +76,29 @@ SELECT {% for c in source_columns -%}
 {#- выбрали функцию any(), так как её использование позволяет улучшить производительность в отличии от ф-ии max() -#}
 {% elif c.data_type not in numeric_types %} 
       any({{ c.name }}) AS {{ c.name }}
-{#- а если тип данных колонки числовой - суммируем данные по ней -#}
-{%- elif c.data_type in numeric_types and splitByChar('_', __table_name)[5] != 'amocrm' %} 
-      SUM({{ c.name }}) AS {{ c.name }}
+{#- а если тип данных колонки числовой - суммируем данные по ней, но не для всех источников такая схема -#}
+{%- elif c.data_type in numeric_types -%}
+    {# Определяем список источников, для которых будем использовать any() вместо SUM() #}
+    {%- set excluded_sources = ['amocrm', 'profitbase'] -%}
+
+    {# Проверяем, был ли передан аргумент datasources #}
+    {%- if datasources is not none -%}
+        {# Приводим элементы datasources к нижнему регистру и оставляем только те, которые есть в excluded_sources #}
+        {%- set matching_sources = datasources | map('lower') | select("in", excluded_sources) | list -%}
+        {# {{ log("matching_sources: " ~ matching_sources, info=True) }} #}
+    {%- else -%}
+        {# Если datasources не задан, считаем, что пересечений нет (matching_sources — пустой список) #}
+        {%- set matching_sources = [] -%}
+    {%- endif -%}
+
+    {# Если пересечение (matching_sources) не пустое, применяем any(), иначе SUM() #}
+    {%- if matching_sources | length > 0 -%}
+        {# Для исключённых источников используем any(), чтобы избежать дублирования значений #}
+        any({{ c.name }}) AS {{ c.name }}
+    {%- else -%}
+        {# Для остальных источников считаем сумму значений в столбце #}
+        SUM({{ c.name }}) AS {{ c.name }}
+    {%- endif -%}
 {%- else %} any({{ c.name }}) AS {{ c.name }}
 {#- после каждой строки кроме последней расставляем запятые, чтобы сгенерировался читаемый запрос -#}
 {%- endif %} {% if not loop.last %},{% endif %}{% endfor %} 
