@@ -77,15 +77,18 @@ SELECT
 #}
 
 {#- новая версия: -#}
-    {%- set col_expr = datacraft.union_column_expression(col_type, col_name) %}
-    
-    {# {{ log("Выражение для столбца " ~ col_name ~ ": " ~ col_expr, info=true) }} #}
-    
-    {%- if 'array' in col_type | lower -%}
-        {{ col_expr }} as {{ col.name }} {% if not loop.last %},{% endif %}
-    {%- else -%}
-        to{{ col_type.split('(')[0] }}({{ col_expr }}) as {{ col.name }} {% if not loop.last %},{% endif %}
-    {%- endif -%}
+{%- set col_expr = datacraft.union_column_expression(col_type, col_name, relation_columns, relation) %}
+
+{# Логируем выражение для отладки #}
+{# {{ log("Выражение для столбца " ~ col_name ~ ": " ~ col_expr, info=true) }} #}
+
+{%- if 'array' in col_type | lower -%}
+    {# Проверяем, что col_expr действительно является массивом #}
+    {{ col_expr }} as {{ col.name }} {% if not loop.last %},{% endif %}
+{%- else -%}
+    {# Приводим к нужному типу #}
+    to{{ col_type.split('(')[0] }}({{ col_expr }}) as {{ col.name }} {% if not loop.last %},{% endif %}
+{%- endif -%}
     
 {%- endfor %}
 FROM {{ relation }}

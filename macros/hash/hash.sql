@@ -60,7 +60,7 @@
 
 {#- пока файла нет, записываем список линков напрямую. В дальнейшем планируется читать их из файла fromyaml -#}
 {%- set links_in_project =["ManualAdCostStat","UtmHashRegistry","AdCostStat","MediaplanStat","VisitStat",
-"AppInstallStat","AppEventStat","AppSessionStat","AppDeeplinkStat","AppProfileMatching", "CrmEventStat", "LeadContactMatching"] -%}
+"AppInstallStat","AppEventStat","AppSessionStat","AppDeeplinkStat","AppProfileMatching", "CrmEventStat", "LeadContactMatching", "PropertyActionStat"] -%}
 
 
 {#- задаём список всех линков из metadata -#}
