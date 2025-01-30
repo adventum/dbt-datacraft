@@ -13,10 +13,9 @@ doc_status: ready (нужно ревью)
 
 В обоих разделах почти одинаковая структура:
 
-- `name` - имя создаваемого definition, который будет отображаться в UI airbyte
-- `dockerRepository` - название Docker-образа на DockerHub
-- `dockerImageTag` — тег Docker-образа на DockerHub
-- `documentationUrl`  — ссылка на раздел “[[Connectors]]”, где даны инструкции, как подключить коннектор в Aibyte
+- `slug` - имя создаваемого definition, который будет отображаться в UI airbyte
+- `image` - (название Docker-образа на DockerHub) : (тег Docker-образа на DockerHub)
+- `documentation`  — ссылка на раздел “[[Connectors]]”, где даны инструкции, как подключить коннектор в Aibyte
 
 В `source_definitions` дополнительно входит поле `account_id_field`, которое определяет, какое поле должно изменяться при создании нового подключения по шаблону дагом [[create_connections]].
 

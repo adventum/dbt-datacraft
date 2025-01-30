@@ -23,6 +23,7 @@ dependencies = [
     "apache-airflow-providers-airbyte >= 3.8.1, <4.0.0",
     "pydantic >= 2.7.0, <3",
     "strenum",
+    "deepdiff",
 ]
 
 [project.urls]

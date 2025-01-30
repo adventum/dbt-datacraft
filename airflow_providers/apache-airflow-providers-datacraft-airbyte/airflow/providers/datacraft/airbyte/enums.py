@@ -46,3 +46,14 @@ class JobSyncConfigTypeEnum(StrEnum):
     reset_connection = "reset_connection"
     refresh = "refresh"
     # clear = "clear"
+
+
+class BackFillPreferenceEnum(StrEnum):
+    enabled = "enabled"
+    disabled = "disabled"
+
+
+class ConnectionGeographyEnum(StrEnum):
+    auto = "auto"
+    us = "us"
+    eu = "eu"

@@ -3,6 +3,8 @@ from typing import Optional
 from pydantic import BaseModel
 
 from .enums import (
+    BackFillPreferenceEnum,
+    ConnectionGeographyEnum,
     NamespaceDefinitionEnum,
     TimeUnitEnum,
     ConnectionStatusEnum,
@@ -47,11 +49,19 @@ class ConnectionSpec(Model):
     destinationId: str
     status: ConnectionStatusEnum
     schedule: ScheduleSpec | None = None
+    scheduleType: ScheduleSpec | str | None = None
+    scheduleData: dict | None = None
     nonBreakingChangesPreference: NonBreakingChangesPreferenceEnum | None = None
     namespaceDefinition: NamespaceDefinitionEnum | None = None
     namespaceFormat: str | None = None
     prefix: str | None = None
     syncCatalog: dict | None = None
+    operationIds: list[str] | None = None
+    notifySchemaChanges: bool | None = None
+    notifySchemaChangesByEmail: bool | None = None
+    backfillPreference: BackFillPreferenceEnum | None = None
+    geography: ConnectionGeographyEnum | None = None
+    resourceRequirements: dict | None = None
     # TODO syncCatalog schema
 
 
@@ -73,6 +83,18 @@ class DestinationDefinitionSpec(BaseDestinationDefinition):
 class DestinationSpec(Model):
     destinationId: str
     name: str
+    connectionConfiguration: dict
+
+
+class ClickhouseDestinationConfiguration(Model):
+    ssl: bool
+    host: str
+    port: str | int
+    database: str
+    password: str
+    tcp_port: str | int
+    username: str
+    tunnel_method: dict[str, str]
 
 
 class AirByteJobSpec(Model):

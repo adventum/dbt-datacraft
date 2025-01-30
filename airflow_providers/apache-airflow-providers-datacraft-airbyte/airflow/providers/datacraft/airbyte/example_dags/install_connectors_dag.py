@@ -7,7 +7,7 @@ from airflow.providers.datacraft.airbyte.models import (
     BaseDestinationDefinition,
     BaseSourceDefinition,
     SourceDefinitionSpec,
-    DestinationDefinitionSpec
+    DestinationDefinitionSpec,
 )
 from airflow.providers.datacraft.airbyte.operators import (
     AirbyteCreateDestinationDefinitionsOperator,
@@ -25,11 +25,47 @@ from airflow.providers.datacraft.dags.configs.get_configs import get_configs
 from typing import Union, List, Dict
 
 
+def transform_connectors_config(configurations: list[dict]) -> list[dict[str, str]]:
+    """
+    We transform source_definitions, destinations_definitions from connectors.yaml
+    to the required format, which is convenient to transfer to the airbyte API
+
+    We also skip account_id_field in source_definitions, since it is not needed in this dag
+
+    E.g
+    "slug": "ydisk",                          -> "name": "ydisk",
+    "image": "test/source-yandex-disk:0.1.0", -> "dockerRepository": "test/source-yandex-disk",
+                                                 "dockerImageTag": "0.1.0"
+    "documentation": "example.com"            -> "documentationUrl": "example.com"
+    """
+
+    configurations = configurations or []
+    transformed_configurations: list[dict] = []
+    for configuration in configurations:
+        image = str(configuration["image"]).split(":")
+
+        name = configuration["slug"]
+        docker_repository = image[0]
+        docker_image_tag = image[1]
+        documentation_url = configuration["documentation"]
+
+        transformed_configuration: dict[str, str] = {
+            "name": name,
+            "dockerRepository": docker_repository,
+            "dockerImageTag": docker_image_tag,
+            "documentationUrl": documentation_url,
+        }
+        transformed_configurations.append(transformed_configuration)
+
+    return transformed_configurations
+
+
 def filter_definitions_for_update_and_creation(
     definitions_configuration: List[Dict],
-    existing_definitions: List[Union['SourceDefinitionSpec', 'DestinationDefinitionSpec']]
+    existing_definitions: List[
+        Union["SourceDefinitionSpec", "DestinationDefinitionSpec"]
+    ],
 ) -> Dict[str, List[Dict]]:
-
     definitions_to_create: list = []
     definitions_to_update: list = []
 
@@ -40,23 +76,31 @@ def filter_definitions_for_update_and_creation(
         for existing_definition in existing_definitions:
             if (
                 configuration.get("name") == existing_definition.name
-                and configuration.get("dockerRepository") == existing_definition.dockerRepository
+                and configuration.get("dockerRepository")
+                == existing_definition.dockerRepository
             ):
                 # If name and dockerRepository match, check dockerImageTag
-                if configuration.get("dockerImageTag") == existing_definition.dockerImageTag:
+                if (
+                    configuration.get("dockerImageTag")
+                    == existing_definition.dockerImageTag
+                ):
                     # If dockerImageTag also matches, skip the element
                     matched = True
                     break
                 else:
                     # If dockerImageTag is different, add to the update list
                     if isinstance(existing_definition, SourceDefinitionSpec):
-                        configuration["sourceDefinitionId"] = existing_definition.sourceDefinitionId
+                        configuration["sourceDefinitionId"] = (
+                            existing_definition.sourceDefinitionId
+                        )
                     elif isinstance(existing_definition, DestinationDefinitionSpec):
                         configuration["destinationDefinitionId"] = (
                             existing_definition.destinationDefinitionId
                         )
                     else:
-                        raise Exception("Existing definitions don't match with Pydantic models")
+                        raise Exception(
+                            "Existing definitions don't match with Pydantic models"
+                        )
 
                     definitions_to_update.append(configuration)
                     matched = True
@@ -68,7 +112,7 @@ def filter_definitions_for_update_and_creation(
 
     return {
         "definitions_to_create": definitions_to_create,
-        "definitions_to_update": definitions_to_update
+        "definitions_to_update": definitions_to_update,
     }
 
 
@@ -80,22 +124,23 @@ params = {
 @dag(
     start_date=datetime(2024, 1, 1),
     catchup=False,
-    dag_id="create_source_destination_definitions_dag",
+    dag_id="install_connectors_dag",
     params=params,
 )
-def create_source_destination_definitions_dag():
-
+def install_connectors_dag():
     @task
     def get_configurations(**kwargs) -> dict[str, object]:
         dag_params: dict = (
-            kwargs.get('dag_run').conf
-            if kwargs.get('dag_run')
-            else kwargs['dag'].params
+            kwargs.get("dag_run").conf
+            if kwargs.get("dag_run")
+            else kwargs["dag"].params
         )
 
         get_configurations_task_result: dict[str, object] = get_configs(
             namespace=dag_params.get("namespace", "etlcraft"),
-            config_names=dag_params.get("config_names", ["connectors",])
+            config_names=[
+                "connectors",
+            ],
         )
         return get_configurations_task_result
 
@@ -107,11 +152,18 @@ def create_source_destination_definitions_dag():
         for subsequent transfer to tasks that will create or update these objects
         """
 
-        workspace_id: str = base_configuration.get(f"base", {}).get("workspace_id")
+        workspace_id: str = base_configuration.get("base", {}).get("workspace_id")
         airbyte_conn_id: str = (
-            base_configuration.get(f"base", {}).get("airbyte_conn_id")
+            base_configuration.get("base", {}).get("airbyte_conn_id")
             or "airbyte_default"
         )
+        connectors: dict[str, list[dict]] = base_configuration.get("connectors")
+
+        if not connectors:
+            raise ValueError(
+                "The connectors config is missing or empty. "
+                "Check connectors.yaml and airflow variables for it (format, path, source)"
+            )
 
         if not workspace_id:
             # Get workspace_id from airbyte if it was not defined in the base config
@@ -138,25 +190,27 @@ def create_source_destination_definitions_dag():
                 workspace_id = workspaces[0].workspaceId
 
         # We pass variables to xcom to use them in other tasks
-        kwargs['ti'].xcom_push(key='workspace_id', value=workspace_id)
-        kwargs['ti'].xcom_push(key='airbyte_conn_id', value=airbyte_conn_id)
+        kwargs["ti"].xcom_push(key="workspace_id", value=workspace_id)
+        kwargs["ti"].xcom_push(key="airbyte_conn_id", value=airbyte_conn_id)
 
         airbyte_list_source_definitions_operator = AirbyteListSourceDefinitionsOperator(
             task_id="get_list_airbyte_source_definitions",
             airbyte_conn_id=airbyte_conn_id,
-            workspace_id=workspace_id
+            workspace_id=workspace_id,
         )
-        airbyte_list_destination_definitions_operator = AirbyteListDestinationDefinitionsOperator(
-            task_id="get_list_airbyte_destination_definitions",
-            airbyte_conn_id=airbyte_conn_id,
-            workspace_id=workspace_id
+        airbyte_list_destination_definitions_operator = (
+            AirbyteListDestinationDefinitionsOperator(
+                task_id="get_list_airbyte_destination_definitions",
+                airbyte_conn_id=airbyte_conn_id,
+                workspace_id=workspace_id,
+            )
         )
 
-        source_definitions_configuration: list[dict] = (
-            base_configuration.get("connectors").get("source_definitions")
+        source_definitions_configuration: list[dict] = transform_connectors_config(
+            connectors["source_definitions"]
         )
-        destination_definitions_configuration: list[dict] = (
-            base_configuration.get("connectors").get("destination_definitions")
+        destination_definitions_configuration: list[dict] = transform_connectors_config(
+            connectors["destination_definitions"]
         )
 
         existing_source_definitions: list[BaseSourceDefinition] = (
@@ -181,10 +235,18 @@ def create_source_destination_definitions_dag():
         )
 
         object_definitions_map = {
-            "source_definitions_to_create": filtered_source_definitions["definitions_to_create"],
-            "destination_definitions_to_create": filtered_destination_definitions["definitions_to_create"],
-            "source_definitions_to_update": filtered_source_definitions["definitions_to_update"],
-            "destination_definitions_to_update": filtered_destination_definitions["definitions_to_update"],
+            "source_definitions_to_create": filtered_source_definitions[
+                "definitions_to_create"
+            ],
+            "destination_definitions_to_create": filtered_destination_definitions[
+                "definitions_to_create"
+            ],
+            "source_definitions_to_update": filtered_source_definitions[
+                "definitions_to_update"
+            ],
+            "destination_definitions_to_update": filtered_destination_definitions[
+                "definitions_to_update"
+            ],
         }
 
         return object_definitions_map
@@ -211,13 +273,16 @@ def create_source_destination_definitions_dag():
 
     @task
     def create_source_definitions(
-        source_definition_configuration: BaseSourceDefinition | None = None,
-        **kwargs
+        source_definition_configuration: BaseSourceDefinition | None = None, **kwargs
     ) -> SourceDefinitionSpec | str:
         if source_definition_configuration:
             # We get variables from prepare that we use in the operator
-            workspace_id: str = kwargs['ti'].xcom_pull(key='workspace_id', task_ids='prepare')
-            airbyte_conn_id: str = kwargs['ti'].xcom_pull(key='airbyte_conn_id', task_ids='prepare')
+            workspace_id: str = kwargs["ti"].xcom_pull(
+                key="workspace_id", task_ids="prepare"
+            )
+            airbyte_conn_id: str = kwargs["ti"].xcom_pull(
+                key="airbyte_conn_id", task_ids="prepare"
+            )
             random_int: int = random.randint(1000, 9999)
 
             create_source_definitions_task = AirbyteCreateSourceDefinitionsOperator(
@@ -227,7 +292,7 @@ def create_source_destination_definitions_dag():
                 ),
                 airbyte_conn_id=airbyte_conn_id,
                 workspace_id=workspace_id,
-                source_definition_configuration=source_definition_configuration
+                source_definition_configuration=source_definition_configuration,
             )
 
             create_source_definitions_task_result = (
@@ -240,12 +305,16 @@ def create_source_destination_definitions_dag():
     @task
     def create_destination_definitions(
         destination_definition_configuration: BaseDestinationDefinition | None = None,
-        **kwargs
+        **kwargs,
     ) -> DestinationDefinitionSpec | str:
         if destination_definition_configuration:
             # We get variables from prepare that we use in the operator
-            workspace_id: str = kwargs['ti'].xcom_pull(key='workspace_id', task_ids='prepare')
-            airbyte_conn_id: str = kwargs['ti'].xcom_pull(key='airbyte_conn_id', task_ids='prepare')
+            workspace_id: str = kwargs["ti"].xcom_pull(
+                key="workspace_id", task_ids="prepare"
+            )
+            airbyte_conn_id: str = kwargs["ti"].xcom_pull(
+                key="airbyte_conn_id", task_ids="prepare"
+            )
             random_int: int = random.randint(1000, 9999)
 
             create_destination_definitions_task = AirbyteCreateDestinationDefinitionsOperator(
@@ -255,7 +324,7 @@ def create_source_destination_definitions_dag():
                 ),
                 airbyte_conn_id=airbyte_conn_id,
                 workspace_id=workspace_id,
-                destination_definition_configuration=destination_definition_configuration
+                destination_definition_configuration=destination_definition_configuration,
             )
 
             create_destination_definitions_task_result = (
@@ -267,15 +336,20 @@ def create_source_destination_definitions_dag():
 
     @task
     def update_source_definitions(
-        source_definition_configuration: SourceDefinitionSpec | None = None,
-        **kwargs
+        source_definition_configuration: SourceDefinitionSpec | None = None, **kwargs
     ) -> SourceDefinitionSpec | str:
         if source_definition_configuration:
             # We get variables from prepare that we use in the operator
-            workspace_id: str = kwargs['ti'].xcom_pull(key='workspace_id', task_ids='prepare')
-            airbyte_conn_id: str = kwargs['ti'].xcom_pull(key='airbyte_conn_id', task_ids='prepare')
+            workspace_id: str = kwargs["ti"].xcom_pull(
+                key="workspace_id", task_ids="prepare"
+            )
+            airbyte_conn_id: str = kwargs["ti"].xcom_pull(
+                key="airbyte_conn_id", task_ids="prepare"
+            )
 
-            source_definition_id: str = source_definition_configuration.pop("sourceDefinitionId")
+            source_definition_id: str = source_definition_configuration.pop(
+                "sourceDefinitionId"
+            )
             random_int: int = random.randint(1000, 9999)
 
             update_source_definitions_task = AirbyteUpdateSourceDefinitionsOperator(
@@ -286,7 +360,7 @@ def create_source_destination_definitions_dag():
                 airbyte_conn_id=airbyte_conn_id,
                 workspace_id=workspace_id,
                 source_definition_id=source_definition_id,
-                source_definition_configuration=source_definition_configuration
+                source_definition_configuration=source_definition_configuration,
             )
 
             update_source_definitions_task_result = (
@@ -299,12 +373,16 @@ def create_source_destination_definitions_dag():
     @task
     def update_destination_definitions(
         destination_definition_configuration: DestinationDefinitionSpec | None = None,
-        **kwargs
+        **kwargs,
     ) -> DestinationDefinitionSpec | str:
         if destination_definition_configuration:
             # We get variables from prepare that we use in the operator
-            workspace_id: str = kwargs['ti'].xcom_pull(key='workspace_id', task_ids='prepare')
-            airbyte_conn_id: str = kwargs['ti'].xcom_pull(key='airbyte_conn_id', task_ids='prepare')
+            workspace_id: str = kwargs["ti"].xcom_pull(
+                key="workspace_id", task_ids="prepare"
+            )
+            airbyte_conn_id: str = kwargs["ti"].xcom_pull(
+                key="airbyte_conn_id", task_ids="prepare"
+            )
 
             destination_definition_id: str = destination_definition_configuration.pop(
                 "destinationDefinitionId"
@@ -319,7 +397,7 @@ def create_source_destination_definitions_dag():
                 airbyte_conn_id=airbyte_conn_id,
                 workspace_id=workspace_id,
                 destination_definition_id=destination_definition_id,
-                destination_definition_configuration=destination_definition_configuration
+                destination_definition_configuration=destination_definition_configuration,
             )
 
             update_destination_definitions_task_result = (
@@ -340,10 +418,18 @@ def create_source_destination_definitions_dag():
     get_configurations_task = get_configurations()
     prepare_task = prepare(base_configuration=get_configurations_task)
 
-    get_source_definitions_to_create_task = get_source_definitions_to_create(prepare_task)
-    get_destination_definitions_to_create_task = get_destination_definitions_to_create(prepare_task)
-    get_source_definitions_to_update_task = get_source_definitions_to_update(prepare_task)
-    get_destination_definitions_to_update_task = get_destination_definitions_to_update(prepare_task)
+    get_source_definitions_to_create_task = get_source_definitions_to_create(
+        prepare_task
+    )
+    get_destination_definitions_to_create_task = get_destination_definitions_to_create(
+        prepare_task
+    )
+    get_source_definitions_to_update_task = get_source_definitions_to_update(
+        prepare_task
+    )
+    get_destination_definitions_to_update_task = get_destination_definitions_to_update(
+        prepare_task
+    )
 
     create_source_definitions_tasks = create_source_definitions.expand(
         source_definition_configuration=get_source_definitions_to_create_task
@@ -375,4 +461,4 @@ def create_source_destination_definitions_dag():
     get_destination_definitions_to_update_task >> update_destination_definitions_tasks
 
 
-dag_instance = create_source_destination_definitions_dag()
+dag_instance = install_connectors_dag()
