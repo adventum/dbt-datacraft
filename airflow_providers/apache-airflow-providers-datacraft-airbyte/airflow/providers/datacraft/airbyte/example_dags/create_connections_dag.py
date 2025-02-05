@@ -53,6 +53,27 @@ platform_account_id_field_mapping: dict[str, str] = {
 """
 
 
+def validate_and_transform_datasources(
+    datasources: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """
+    We cut off datasource objects if at least one key value is None.
+    This is necessary to avoid receiving errors and create correct sources and connections.
+    We also convert the dictionary into a list of objects
+    """
+    validated_datasources: list[dict[str, Any]] = []
+    for datasource_id, datasource_configuration in datasources.items():
+        if all(value not in [None, "null"] for value in datasource_configuration.values()):
+            validated_datasources.append(datasource_configuration)
+        else:
+            print(
+                f"Datasource with id - {datasource_id} is not valid, "
+                f"because some values in datasource configuration is missing. "
+                f"This one will be skipped"
+            )
+    return validated_datasources
+
+
 def pydantic_models_to_dict(
     models: list[
         Union[
@@ -68,10 +89,10 @@ def pydantic_models_to_dict(
 
 
 def replace_presets_fields(
-    base: dict,
+    base: dict[str, Any],
     datasource: dict[str, Any],
     raw_source_configuration: dict[str, Any],
-    connectors: dict,
+    connectors: dict[str, list[dict]],
 ) -> dict:
     """
     The function replaces the credentials_craft_host, credentials_craft_token,
@@ -162,10 +183,10 @@ def clean_raw_connection_config(
 
 
 def filter_sources_for_update_and_creation(
-    base: dict,
-    datasources: list[dict],
-    presets: dict,
-    connectors: dict,
+    base: dict[str, Any],
+    datasources: list[dict[str, Any]],
+    presets: dict[str, Any],
+    connectors: dict[str, list[dict]],
     existing_sources: list[dict],
     existing_source_definitions: list[dict],
 ) -> dict[str, list[dict]]:
@@ -266,8 +287,8 @@ def filter_sources_for_update_and_creation(
 
 
 def filter_destinations_for_update_and_creation(
-    base: dict,
-    connectors: dict,
+    base: dict[str, Any],
+    connectors: dict[str, list[dict]],
     existing_destinations: list[dict],
     existing_destinations_definitions: list[dict],
 ) -> dict[str, list[dict]]:
@@ -341,8 +362,8 @@ def filter_destinations_for_update_and_creation(
 
 
 def filter_connections_for_update_and_creation(
-    presets: dict,
-    datasources: dict,
+    presets: dict[str, Any],
+    datasources: list[dict[str, Any]],
     existing_connections: list[dict],
     existing_sources: list[dict],
     existing_destinations: list[dict],
@@ -361,10 +382,10 @@ def filter_connections_for_update_and_creation(
     connections_to_update: list[dict] = []
 
     for datasource in datasources:
-        preset_name = datasource["preset"]
-        source_type = datasource["source_type"]
-        account_id = datasource["account_id"]
-        source_name = f"{source_type}_{preset_name}_{account_id}"
+        preset_name: str = datasource["preset"]
+        source_type: str = datasource["source_type"]
+        account_id: str = datasource["account_id"]
+        source_name: str = f"{source_type}_{preset_name}_{account_id}"
         raw_connection_configuration = presets["connection_presets"][preset_name]
         raw_connection_configuration_copy = copy.deepcopy(raw_connection_configuration)
 
@@ -479,11 +500,9 @@ def create_connections_dag():
         Prepare gets workspace_id, airbyte_conn_id from the received configs from get_configuration
         """
         base: dict[str, Any] = base_configuration.get("base", {})
-        datasources: list[dict[str, Any]] = list(
-            base_configuration.get("datasources", {}).values()
-        )
+        datasources: dict[str, dict[str, Any]] = base_configuration.get("datasources", {})
         presets: dict[str, Any] = base_configuration.get("presets", {})
-        connectors: dict = base_configuration.get("connectors", {})
+        connectors: dict[str, list[dict]] = base_configuration.get("connectors", {})
 
         if not base:
             raise Exception(
@@ -502,6 +521,8 @@ def create_connections_dag():
                 "Presets config not provided. Make sure presets.json file is created "
                 "and source, format, path variables are specified in airflow"
             )
+
+        datasources: list[dict[str, Any]] = validate_and_transform_datasources(datasources)
 
         workspace_id: str = base.get("workspace_id")
         airbyte_conn_id: str = base.get("airbyte_conn_id") or "airbyte_default"
@@ -666,8 +687,8 @@ def create_connections_dag():
         airbyte_conn_id: str = kwargs["ti"].xcom_pull(
             key="airbyte_conn_id", task_ids="prepare"
         )
-        presets: dict = kwargs["ti"].xcom_pull(key="presets", task_ids="prepare")
-        datasources: dict = kwargs["ti"].xcom_pull(
+        presets: dict[str, Any] = kwargs["ti"].xcom_pull(key="presets", task_ids="prepare")
+        datasources: list[dict[str, Any]] = kwargs["ti"].xcom_pull(
             key="datasources", task_ids="prepare"
         )
 
