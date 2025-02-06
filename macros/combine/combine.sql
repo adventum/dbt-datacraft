@@ -32,7 +32,7 @@
 {%- endif -%}
 
 {#- находим все таблицы, которые соответствут паттерну -#}
-{%- set relations = datacraft.get_relations_by_re(schema_pattern=target.schema, 
+{%- set relations = datacraft.get_relations_by_re(schema_pattern='^' ~ target.schema ~ '$', 
                                                               table_pattern=table_pattern) -%} 
 
 {#- если что-то не так - выдаём ошибку                                                                  
