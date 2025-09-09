@@ -11,4 +11,4 @@ status: не готово
 - `airbyte_conn_id` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
 - `workspace_id` или `workspace_name` + `workspaces_list` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
 ## Возвращаемое значение
-Список словарей с полями `sourceId`, `name` и `configuration`.
+Список словарей с полями `sourceId`, `name` и `connectionConfiguration`.

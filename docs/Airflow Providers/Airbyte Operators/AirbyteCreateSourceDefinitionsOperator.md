@@ -10,8 +10,10 @@ status: не готово
 ## Аргументы
 - `airbyte_conn_id` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
 - `workspace_id` или `workspace_name` + `workspaces_list` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
-- `name`— название коннектора, который нужно создать
-- `dockerImageTag` — ссылка на образ коннектора в репозитории Docker
-- `documentationUrl` — ссылка на документацию
+- словарь `source_definition_configuration` , он должен содержать ключи:
+	- `name`— название коннектора, который нужно создать.
+	-  `dockerRepository` - ссылка на репозиторий (например: adventum/source-tg-stat)
+	- `dockerImageTag` — версия используемого коннектора (например: 1.0.1)
+	- `documentationUrl` — ссылка на документацию
 ## Возвращаемое значение
 Словарь с параметрами созданного коннкетора, в т. ч. `sourceDefinitionId`.

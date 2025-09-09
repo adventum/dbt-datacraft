@@ -3,17 +3,17 @@ api_version: Официальное API
 description: 
 type: operator
 doc_status: ready
-status: не готово
+status: ready to test
 ---
 ## Описание
 Создает новый [[Airbyte Connection]].
 ## Аргументы
 - `airbyte_conn_id` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
 - `name` — название Airbyte Connection, которое нужно создать
-- `source_id` или `source_name`— ID или название [[Airbyte Source]], который нужно использовать. Если передан аргумент `source_name`, то  становится обязательным аргумент `sources_list`. В этот аргумент нужно передать результат вызова оператора [[AirbyteListSourcesOperator]].
-- `destination_id` или `destination_name`— ID или название [[Airbyte Destination]], который нужно использовать. Если передан аргумент `source_name`, то  становится обязательным аргумент `destinations_list`. В этот аргумент нужно передать результат вызова оператора [[AirbyteListDestinationsOperator]].
+- `source_id` — ID [[Airbyte Source]], который мы хотим связать с destination(БД). 
+- `destination_id` — ID  [[Airbyte Destination]], который мы хотим связать с source выше. 
 - словарь `params`, который содержит следующие параметры:
-    - `configurations` — параметры стримов
+    - `syncCatalog` — параметры стримов
     - `schedule` — параметры расписания запуска
     - `namespaceDefinition` — правила нейминга таблиц с данными: `destination` (по умолчанию), `source` или `custom_format`. Если задан `custom_format`, то можно также задать `namespaceFormat`
     - `prefix` — префикс, который будет прибавляться к названиям таблиц

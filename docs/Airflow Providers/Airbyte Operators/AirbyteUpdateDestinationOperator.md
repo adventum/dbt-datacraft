@@ -10,7 +10,8 @@ status: не готово
 ## Аргументы
 - `airbyte_conn_id` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
 - `workspace_id` или `workspace_name` + `workspaces_list`(см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
-- `id` или `name`— ID или название Airbyte Destination, который нужно обновить. Если передан аргумент `name`, то  становится обязательным аргумент `destinations_list`. В этот аргумент нужно передать результат вызова оператора [[AirbyteListDestinationsOperator]].
-- `configuration` — параметры (свои для каждого коннектора).
+- `destination_id` — ID  Airbyte Destination, который нужно обновить.
+- `connection_configuration` - словарь с параметрами самого destination(например `host`, `port`, `user`, `password` ...) - для каждого destination индивидуальные параметры
+- `name` - имя destination
 ## Возвращаемое значение
 Словарь с параметрами обновленного коннектора, в т. ч. `destinationId`.

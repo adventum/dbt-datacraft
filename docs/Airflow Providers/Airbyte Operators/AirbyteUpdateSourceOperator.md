@@ -10,7 +10,8 @@ status: не готово
 ## Аргументы
 - `airbyte_conn_id` (см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
 - `workspace_id` или `workspace_name` + `workspaces_list`(см. [[Airbyte Operators#Общие аргументы всех операторов|Общие аргументы]])
-- `id` или `name`— ID или название Airbyte Source, который нужно обновить. Если передан аргумент `name`, то  становится обязательным аргумент `sources_list`. В этот аргумент нужно передать результат вызова оператора [[AirbyteListSourcesOperator]].
-- `configuration` — параметры (свои для каждого коннектора).
+- `source_id` — ID  Airbyte Source, который нужно обновить
+- `connection_configuration` — параметры (свои для каждого коннектора).
+- `name` - имя коннектора
 ## Возвращаемое значение
 Словарь с параметрами обновленного коннектора, в т. ч. `sourceId`.

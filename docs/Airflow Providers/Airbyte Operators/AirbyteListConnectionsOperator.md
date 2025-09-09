@@ -18,7 +18,7 @@ status: не готово
 - `destinationId`
 - `status`
 - `schedule`
-- `nonBreakingSchemaUpdatesBehavior`
+- `nonBreakingChangesPreference`
 - `namespaceDefinition`
 - `namespaceFormat`
 - `prefix`

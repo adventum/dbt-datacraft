@@ -9,3 +9,7 @@ docs/.obsidian/hotkeys.json
 airflow_providers/apache_airflow_providers_datacraft_dags/dist
 airflow_providers/apache_airflow_providers_datacraft_airbyte/dist
 .venv
+
+# Ignore python cache
+__pycache__/
+*.pyc
